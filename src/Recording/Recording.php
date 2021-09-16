@@ -46,7 +46,8 @@ class Recording
     {
         $this->id = (string)$values['id'];
         $this->sessionId = (string)$values['sessionId'];
-        $this->createdAt = (new DateTime())->setTimestamp($values['createdAt']);
+        $this->createdAt = (new DateTime())
+            ->setTimestamp($values['createdAt'] < 9999999999999 ? $values['createdAt'] : $values['createdAt'] / 1000);
         $this->size = (int)$values['size'];
         $this->duration = (float)$values['duration'];
         $this->url = (string)$values['url'];
@@ -60,7 +61,7 @@ class Recording
             ->setHasVideo($values['hasVideo']);
         if ($outputMode->equalsString(RecordingOutputModeEnum::COMPOSED) && $values['hasVideo']) {
             $builder->setResolution($values['resolution'])
-                ->setRecordingLayout($values['recordingLayout']);
+                ->setRecordingLayout(new RecordingLayoutEnum($values['recordingLayout']));
             if (isset($values['customLayout'])) {
                 $builder->setCustomLayout($values['customLayout']);
             }
